@@ -1,0 +1,23 @@
+{
+  "name": "cleanharbors-frontend",
+  "version": "0.1.0",
+  "description": "Intended to be used with the cleanharbors-api-server backend. This app provides a means for a standalone client to communicate with the server.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiveBacteria/cleanharbors-frontend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LiveBacteria/cleanharbors-frontend/issues"
+  },
+  "homepage": "https://github.com/LiveBacteria/cleanharbors-frontend#readme",
+  "devDependencies": {
+    "electron": "^6.0.12"
+  }
+}
