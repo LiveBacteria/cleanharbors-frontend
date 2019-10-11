@@ -1,6 +1,8 @@
 //Public variables and functions declared here
 const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
 
+//const serverChoice = ping("http://172.24.19.105/").then(found = => {found ? return "http://livebacteria-cleanharbors-api.herokuapp.com/" : return "http://172.24.19.105/"});
+
 function setToArray(str) {
     if (str === "" || str === "Log Numbers") {
         if (typeof str != "number") {
@@ -41,11 +43,12 @@ function cycleDVIR(err, com, dvirArray, i){
         if(document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtInspDt")){
         console.log(document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtInspDt"));
         delay(1500).then(() => {
-            fetch("http://localhost:3000/api/htmltopdf",{
+            fetch("https://livebacteria-cleanharbors-api.herokuapp.com/api/htmltopdf",{
             method:"post",
                 headers: { 'Content-Type': 'application/json' },
             mode: 'no-cors',
                 body: JSON.stringify({
+                vehicleNumber: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value,
                 htmlContent: {
                     htmlHeadContent: document.querySelector(`#iframe_1`).contentWindow.document.head.outerHTML,
                     htmlBodyContent: document.querySelector(`#iframe_1`).contentWindow.document.body.outerHTML,
@@ -62,11 +65,12 @@ function cycleDVIR(err, com, dvirArray, i){
     }else{
         delay(3000).then(() => {
             console.log("Warning! Slow internet deteced, skipping current DVIR.");
-        fetch("http://localhost:3000/api/htmltopdf",{
+        fetch("https://livebacteria-cleanharbors-api.herokuapp.com/api/htmltopdf",{
             method:"post",
             headers: { 'Content-Type': 'application/json' },
             mode: 'no-cors',
             body: JSON.stringify({
+                vehicleNumber: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value,
                 htmlContent: {
                     htmlHeadContent: document.querySelector(`#iframe_1`).contentWindow.document.head.outerHTML,
                     htmlBodyContent: document.querySelector(`#iframe_1`).contentWindow.document.body.outerHTML,
@@ -87,9 +91,9 @@ function cycleDVIR(err, com, dvirArray, i){
 
 document.head.innerHTML = "";
 document.body.innerHTML = "Loading~";
-fetch("http://localhost:3000/login").then((res) => res.json()).then((data) => document.body.innerHTML = data.content).then(() =>
+fetch("https://livebacteria-cleanharbors-api.herokuapp.com/login").then((res) => res.json()).then((data) => document.body.innerHTML = data.content).then(() =>
     document.querySelector("#submitBtn").addEventListener("click", () => {
-    fetch("http://localhost:3000/api/login", {
+    fetch("https://livebacteria-cleanharbors-api.herokuapp.com/api/login", {
         method: "post",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -97,7 +101,7 @@ fetch("http://localhost:3000/login").then((res) => res.json()).then((data) => do
         password: document.querySelector("#passwordEntry").value
         })
 }).then((res) => res.json()).then((data) => data.key).then((auth) => {
-    fetch("http://localhost:3000/api/content-page", {
+    fetch("https://livebacteria-cleanharbors-api.herokuapp.com/api/content-page", {
         method: "post",
             body: JSON.stringify({
         auth: auth
@@ -120,10 +124,10 @@ if(!document.querySelector("#informationDisplayDiv")){
 if(!document.querySelector("#iframe_1")){
     let iframeObj = document.createElement('iframe');
     iframeObj.id = `iframe_1`;
-    iframeObj.hidden = true;
+    iframeObj.hidden = false;
     document.body.appendChild(iframeObj);
 }
-dvirArray.unshift(0,0,0);
+dvirArray.unshift(0);
 if(cycleDVIR(false, false, dvirArray, 0)){
     fetch("http://localhost:3000/api/htmltopdf", {
         method:"post",
@@ -141,14 +145,14 @@ if(cycleDVIR(false, false, dvirArray, 0)){
 //No longer used
 document.querySelector("#finish_1").addEventListener("click", () => {
     const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
-fetch("http://localhost:3000/api/htmltopdf", {
+fetch("https://livebacteria-cleanharbors-api.herokuapp.com/api/htmltopdf", {
     method:"post",
     headers: { 'Content-Type': 'application/json' },
     mode: 'no-cors',
-    body: JSON.stringify({finished: true})
+    body: JSON.stringify({finished: true, vehicleNumber: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value})
 });
 delay(500).then(() => {
-    window.open("http://localhost:3000/api/download", "_blank");
+    window.open("https://livebacteria-cleanharbors-api.herokuapp.com/api/download", "_blank");
 });
 });
 })
