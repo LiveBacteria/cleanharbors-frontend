@@ -17,6 +17,13 @@ user: Livebacteria
 password: demoAuth
 ```
 ### How to Obtain DVIR Lists
+For demonstration purposes this list can be used:
+```
+8750917,8751334,8752243,8753939,8756627,8760144,8762537,8765824,8767577,8771431
+```
+
+Search parameters are `Asset Number: 1031`, `Start Date: 10/14/2019`,`End Date: 10/20/2019`
+
 Utlizing Cleanharbors WinWeb DVIR Search, enter a unit number and a date. Then, please check the `Select All` checkbox and click `Print DVIR`. This will open a new tab or window, with a URL that contains the list of DVIR numbers. Please select all the DVIR numbers and copy them. 
 
 You now have a list of DVIRs on specified search results.
