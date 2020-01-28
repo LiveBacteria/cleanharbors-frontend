@@ -1,7 +1,13 @@
 //Public variables and functions declared here
 const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
 
+//const dvirCompiler = require("./helpers/dvirCompiler.js");
+//dvirCompiler.helloWorld();
 //const serverChoice = ping("http://172.24.19.105/").then(found = => {found ? return "http://livebacteria-cleanharbors-api.herokuapp.com/" : return "http://172.24.19.105/"});
+
+function taskSelection(task) {
+
+}
 
 function setToArray(str) {
     if (str === "" || str === "Log Numbers") {
@@ -18,15 +24,15 @@ function setToArray(str) {
     return JSON.parse("[" + str + "]");
 }
 
-function tryDVIRFetch(y, dvirArray){
+function tryDVIRFetch(y, dvirArray) {
     console.log("tryDvirFetch i is: " + y);
     let iframeString = `#iframe_${y}`;
     console.log(iframeString);
     let target = document.querySelector(`#iframe_${y}`).contentWindow.document;
-    if(!!document.querySelector(`#iframe_${y}`).contentWindow){
-        fetch("http://localhost:3000/api/htmltopdf",{
-            method:"post",
-            headers: { 'Content-Type': 'application/json' },
+    if (!!document.querySelector(`#iframe_${y}`).contentWindow) {
+        fetch("http://localhost:3000/api/htmltopdf", {
+            method: "post",
+            headers: {'Content-Type': 'application/json'},
             mode: 'no-cors',
             body: JSON.stringify({
                 vehicleNumber: target.querySelector("#txtVehicleNo").value,
@@ -38,32 +44,34 @@ function tryDVIRFetch(y, dvirArray){
                     dvirDate: target.querySelector("#txtInspDt").value
                 }
             })
-        }).then((res) => {console.log(res)});
+        }).then((res) => {
+            console.log(res)
+        });
 
-    }else{
+    } else {
         delay(3000).then(() => {
-            fetch("http://localhost:3000/api/htmltopdf",{
-            method:"post",
-                headers: { 'Content-Type': 'application/json' },
-            mode: 'no-cors',
+            fetch("http://localhost:3000/api/htmltopdf", {
+                method: "post",
+                headers: {'Content-Type': 'application/json'},
+                mode: 'no-cors',
                 body: JSON.stringify({
-                vehicleNumber: document.querySelector(`#iframe_${y}`).contentWindow.document.querySelector("#txtVehicleNo").value,
-                htmlContent: {
-                    htmlHeadContent: document.querySelector(`#iframe_${y}`).contentWindow.document.head.outerHTML,
-                    htmlBodyContent: document.querySelector(`#iframe_${y}`).contentWindow.document.body.outerHTML,
-                    logNumber: dvirArray[y],
-                    dvirType: document.querySelector(`#iframe_${y}`).contentWindow.document.querySelector("#optTrip_0").checked,
-                    dvirDate: document.querySelector(`#iframe_${y}`).contentWindow.document.querySelector("#txtInspDt").value
-                }
+                    vehicleNumber: document.querySelector(`#iframe_${y}`).contentWindow.document.querySelector("#txtVehicleNo").value,
+                    htmlContent: {
+                        htmlHeadContent: document.querySelector(`#iframe_${y}`).contentWindow.document.head.outerHTML,
+                        htmlBodyContent: document.querySelector(`#iframe_${y}`).contentWindow.document.body.outerHTML,
+                        logNumber: dvirArray[y],
+                        dvirType: document.querySelector(`#iframe_${y}`).contentWindow.document.querySelector("#optTrip_0").checked,
+                        dvirDate: document.querySelector(`#iframe_${y}`).contentWindow.document.querySelector("#txtInspDt").value
+                    }
+                })
             })
-        })
         })
     }
 }
 
-function newCycleDVIR(err, com, dvirArray, i){
+function newCycleDVIR(err, com, dvirArray, i) {
 
-    for(let x = 0; x < dvirArray.length; x++){
+    for (let x = 0; x < dvirArray.length; x++) {
         let iframeObj = document.createElement('iframe');
         iframeObj.id = `iframe_${x}`;
         iframeObj.hidden = true;
@@ -76,119 +84,205 @@ function newCycleDVIR(err, com, dvirArray, i){
     }
 }
 
-function cycleDVIR(err, com, dvirArray, i){
+function cycleDVIR(err, com, dvirArray, i) {
     console.log(err + " " + com + " " + dvirArray.length + " " + i);
-    if(com){
+    if (com) {
         document.querySelector("#informationDisplayDiv").innerHTML = `Finished`;
         console.log(`Cycle complete. Cycled:${i}`);
         return true;
-    }else if(err){
+    } else if (err) {
         console.error(err);
         return false;
     }
 
-    if(i == "undefined"){
+    if (i == "undefined") {
         i = 0;
     }
-    if(i >= dvirArray.length || i == dvirArray.length){
+    if (i >= dvirArray.length || i == dvirArray.length) {
         cycleDVIR(false, true, null, i);
     }
 
     delay(500).then(() => {
-        if(i == 0){document.querySelector("#iframe_1").src = `http://winweb.cleanharbors.com/Vehicle/UnifiedDVIREntry.aspx?InspectionLogID=${dvirArray[i]}`;}
-}).then(() => {
+        if (i == 0) {
+            document.querySelector("#iframe_1").src = `http://winweb.cleanharbors.com/Vehicle/UnifiedDVIREntry.aspx?InspectionLogID=${dvirArray[i]}`;
+        }
+    }).then(() => {
         delay(1500).then(() => {
-        if(document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtInspDt")){
-        console.log(document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtInspDt"));
-        delay(50).then(() => {
-            fetch("http://localhost:3000/api/htmltopdf",{
-            method:"post",
-                headers: { 'Content-Type': 'application/json' },
-            mode: 'no-cors',
+            if (document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtInspDt")) {
+                console.log(document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtInspDt"));
+                delay(50).then(() => {
+                    fetch("http://localhost:3000/api/htmltopdf", {
+                        method: "post",
+                        headers: {'Content-Type': 'application/json'},
+                        mode: 'no-cors',
+                        body: JSON.stringify({
+                            vehicleNumber: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value,
+                            htmlContent: {
+                                htmlHeadContent: document.querySelector(`#iframe_1`).contentWindow.document.head.outerHTML,
+                                htmlBodyContent: document.querySelector(`#iframe_1`).contentWindow.document.body.outerHTML,
+                                logNumber: dvirArray[i],
+                                dvirType: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#optTrip_0").checked,
+                                dvirDate: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtInspDt").value
+                            }
+                        })
+                    }).then(() => {
+                        document.querySelector("#iframe_1").src = `http://winweb.cleanharbors.com/Vehicle/UnifiedDVIREntry.aspx?InspectionLogID=${dvirArray[i]}`;
+                    });
+                }).then(() => {
+                    document.querySelector("#informationDisplayDiv").innerHTML = `Working~</br>loaded log: ${dvirArray[i]}`;
+                    delay(500).then(() => cycleDVIR(false, false, dvirArray, ++i));
+                });
+            } else {
+                console.log("Warning! Slow internet deteced, delaying.");
+                delay(5000).then(() => {
+                    fetch("http://localhost:3000/api/htmltopdf", {
+                        method: "post",
+                        headers: {'Content-Type': 'application/json'},
+                        mode: 'no-cors',
+                        body: JSON.stringify({
+                            vehicleNumber: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value,
+                            htmlContent: {
+                                htmlHeadContent: document.querySelector(`#iframe_1`).contentWindow.document.head.outerHTML,
+                                htmlBodyContent: document.querySelector(`#iframe_1`).contentWindow.document.body.outerHTML,
+                                logNumber: dvirArray[i],
+                                dvirType: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#optTrip_0").checked,
+                                dvirDate: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtInspDt").value
+                            }
+                        })
+                    }).then(() => {
+                        document.querySelector("#iframe_1").src = `http://winweb.cleanharbors.com/Vehicle/UnifiedDVIREntry.aspx?InspectionLogID=${dvirArray[i]}`;
+                    });
+                }).then(() => {
+                    document.querySelector("#informationDisplayDiv").innerHTML = `Working~</br>loaded log: ${dvirArray[i]}`;
+                    delay(500).then(() => cycleDVIR(false, false, dvirArray, ++i));
+                });
+            }
+        });
+    });
+}
+
+function clear(){
+
+}
+
+function postDVIR(arr, vehicleNumber){
+
+    fetch("http://localhost:3000/api/url-to-pdf", {
+        method: "post",
+        body: JSON.stringify({
+            url: `http://winweb.cleanharbors.com/Vehicle/UnifiedDVIREntry.aspx?InspectionLogID=`,
+            logs: arr,
+            vehicleNumber: vehicleNumber
+        })
+    })
+}
+
+function postDVIR_old(arr, vehicleNumber){
+    for(let i = 0; i < arr.length; i++){
+            fetch("http://localhost:3000/api/url-to-pdf", {
+                method: "post",
                 body: JSON.stringify({
-                vehicleNumber: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value,
-                htmlContent: {
-                    htmlHeadContent: document.querySelector(`#iframe_1`).contentWindow.document.head.outerHTML,
-                    htmlBodyContent: document.querySelector(`#iframe_1`).contentWindow.document.body.outerHTML,
-                    logNumber: dvirArray[i],
-                    dvirType: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#optTrip_0").checked,
-                    dvirDate: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtInspDt").value
-                }
+                    url: `http://winweb.cleanharbors.com/Vehicle/UnifiedDVIREntry.aspx?InspectionLogID=${arr[i]}`,
+                    logNumber: arr[i],
+                    vehicleNumber: vehicleNumber
+                })
             })
-        }).then(() => {
-            document.querySelector("#iframe_1").src = `http://winweb.cleanharbors.com/Vehicle/UnifiedDVIREntry.aspx?InspectionLogID=${dvirArray[i]}`;
-        });
-    }).then(() => {
-            document.querySelector("#informationDisplayDiv").innerHTML = `Working~</br>loaded log: ${dvirArray[i]}`;
-        delay(500).then(() => cycleDVIR(false, false, dvirArray, ++i));
-    });
-    }else{
-        console.log("Warning! Slow internet deteced, delaying.");
-        delay(5000).then(() => {
-        fetch("http://localhost:3000/api/htmltopdf",{
-            method:"post",
-            headers: { 'Content-Type': 'application/json' },
-            mode: 'no-cors',
-            body: JSON.stringify({
-                vehicleNumber: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value,
-                htmlContent: {
-                    htmlHeadContent: document.querySelector(`#iframe_1`).contentWindow.document.head.outerHTML,
-                    htmlBodyContent: document.querySelector(`#iframe_1`).contentWindow.document.body.outerHTML,
-                    logNumber: dvirArray[i],
-                    dvirType: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#optTrip_0").checked,
-                    dvirDate: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtInspDt").value
-                }
-            })
-        }).then(() => {
-            document.querySelector("#iframe_1").src = `http://winweb.cleanharbors.com/Vehicle/UnifiedDVIREntry.aspx?InspectionLogID=${dvirArray[i]}`;
-        });
-    }).then(() => {
-            document.querySelector("#informationDisplayDiv").innerHTML = `Working~</br>loaded log: ${dvirArray[i]}`;
-        delay(500).then(() => cycleDVIR(false, false, dvirArray, ++i));
-    });
     }
-});
-});
+}
+
+function dvirApp(auth, task) {
+    fetch("http://localhost:3000/api/content-page", {
+        method: "post",
+        body: JSON.stringify({
+            auth: auth,
+            task: task
+        })
+    }).then((res) => res.json()).then((data) => document.body.innerHTML = data.content).then(() => {
+            document.querySelector("#start_1").addEventListener("click", () => {
+                const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
+                let dvirArray = setToArray(document.querySelector("#dvirInput").value),
+                    vehicleNumber = document.querySelector("#vehicleId").value;
+                postDVIR(dvirArray, vehicleNumber);
+            });
+        document.querySelector("#clearFields").addEventListener("click", () => {
+            document.querySelector("#dvirInput").value = "";
+            document.querySelector("#vehicleId").value = "";
+        });
+        }
+    );
+}
+
+function dlogApp(auth, task) {
+
 }
 
 document.head.innerHTML = "";
 document.body.innerHTML = "Loading~";
-fetch("http://localhost:3000/login").then((res) => res.json()).then((data) => document.body.innerHTML = data.content).then(() =>
+
+
+fetch("http://localhost:3000/login").then((res) => res.json()).then((data) => document.body.innerHTML = data.content).then(() => {
     document.querySelector("#submitBtn").addEventListener("click", () => {
-    fetch("http://localhost:3000/api/login", {
-        method: "post",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-        user: document.querySelector("#loginEntry").value,
-        password: document.querySelector("#passwordEntry").value
-        })
-}).then((res) => res.json()).then((data) => data.key).then((auth) => {
-    fetch("http://localhost:3000/api/content-page", {
-        method: "post",
+        fetch("http://localhost:3000/api/login", {
+            method: "post",
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-        auth: auth
+                user: document.querySelector("#loginEntry").value,
+                password: document.querySelector("#passwordEntry").value
             })
-    }).then((res) => res.json()).then((data) => document.body.innerHTML = data.content).then(() => {
-        document.querySelector("#start_1").addEventListener("click",  () => {
-            const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
-            let dvirArray = setToArray(document.querySelector("#dvirInput").value);
-            newCycleDVIR(false, false, dvirArray, 0);
-        });
+        }).then((res) => res.json()).then((data) => data.key).then((auth) => {
+            fetch("http://localhost:3000/api/select-task", {method: "post"})
+                .then((res) => res.json())
+                .then((data) => {
+                    document.body.innerHTML = data.content
+                })
+                .then(() => {
+                    document.querySelector("#taskSubmit").addEventListener("click", () => {
+                        let targetId = document.querySelector("#taskSelectionDropdown_0"),
+                            taskOptions = targetId.options[targetId.selectedIndex].value;
+
+                        switch (taskOptions) {
+                            case 'dlog_compiler':
+                                dlogApp("validated", 'dlog');
+                                break;
+                            case 'dvir_compiler':
+                                dvirApp("validated", 'dvir');
+                                break;
+                            default:
+                                alert("Error, please relaunch the application.");
+                                window.location = window.location;
+                                break;
+                        }
+                    });
+                });
+        })
+    });
+})
+
+// fetch("http://localhost:3000/api/content-page", {
+//     method: "post",
+//     body: JSON.stringify({
+//         auth: auth,
+//         task: taskOptions
+//     })
+// }).then((res) => res.json()).then((data) => document.body.innerHTML = data.content).then(() => {
+//     document.querySelector("#start_1").addEventListener("click", () => {
+//         const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
+//         let dvirArray = setToArray(document.querySelector("#dvirInput").value);
+//         newCycleDVIR(false, false, dvirArray, 0);
+//     });
 //No longer used
-document.querySelector("#finish_1").addEventListener("click", () => {
-    const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
-fetch("http://localhost:3000/htmltopdf", {
-    method:"post",
-    headers: { 'Content-Type': 'application/json' },
-    mode: 'no-cors',
-    body: JSON.stringify({
-        finished: true, vehicleNumber: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value})
-});
-delay(500).then(() => {
-    window.open(`http://localhost:3000/api/download/${document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value}`, "_blank");
-});
-});
-});
-})
-})
-)
+// document.querySelector("#finish_1").addEventListener("click", () => {
+//     const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
+//     fetch("http://localhost:3000/htmltopdf", {
+//         method: "post",
+//         headers: {'Content-Type': 'application/json'},
+//         mode: 'no-cors',
+//         body: JSON.stringify({
+//             finished: true,
+//             vehicleNumber: document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value
+//         })
+//     });
+//     delay(500).then(() => {
+//         window.open(`http://localhost:3000/api/download/${document.querySelector(`#iframe_1`).contentWindow.document.querySelector("#txtVehicleNo").value}`, "_blank");
+//     });
+// });
