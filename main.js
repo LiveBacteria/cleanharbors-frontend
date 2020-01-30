@@ -13,9 +13,9 @@ function createWindow () {
         }
     });
     win.removeMenu();
-    BrowserWindow.addDevToolsExtension(`./extension/`);
+    //BrowserWindow.addDevToolsExtension(`./extension/`);
     // and load the index.html of the app.
-    win.loadURL('http://winweb.cleanharbors.com/Vehicle/');
+    win.loadURL('http://localhost:3000/landing');
 }
 
 app.on('ready', () => createWindow());
