@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/LiveBacteria/cleanharbors-frontend#readme",
   "devDependencies": {
-    "electron": "^6.0.12"
+    "electron": "^15.5.5"
   }
 }
